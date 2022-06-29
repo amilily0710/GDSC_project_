@@ -11,10 +11,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
-    companion object {
-        private const val TAG = "KotlinActivity"
-    }
-
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +19,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = Firebase.auth
-
         binding.apply {
             loginBtn.setOnClickListener {
                 if(loginId.text.toString().isNotEmpty() && loginPw.text.toString().isNotEmpty()){

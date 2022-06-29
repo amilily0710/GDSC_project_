@@ -10,13 +10,13 @@ import com.example.gdsc_project.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
 class SignUpActivity: AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
-    val database = Firebase.database.reference
-    var dateString = ""
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,50 +26,62 @@ class SignUpActivity: AppCompatActivity() {
 
         auth = Firebase.auth
 
-        binding.birthButton.setOnClickListener {
-            val calendar : Calendar = Calendar.getInstance()
-            val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                dateString = "${year}년 ${month+1}월 ${dayOfMonth}일"
-                binding.textBirth.text = "BIRTH : $dateString"
-            }
-            DatePickerDialog(this, dateSetListener, calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show()
-        }
+//        binding.birthButton.setOnClickListener {
+//            val calendar : Calendar = Calendar.getInstance()
+//            val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+//                dateString = "${year}년 ${month+1}월 ${dayOfMonth}일"
+//                binding.textBirth.text = "BIRTH : $dateString"
+//            }
+//            DatePickerDialog(this, dateSetListener, calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show()
+//        }
 
 
         binding.signBtn.setOnClickListener {
-            createAccount(binding.editName.text.toString(), binding.editAge.text.toString(), binding.editLocation.text.toString(),
-                dateString,binding.editId.text.toString(),binding.editPw.text.toString())
+            createAccount(binding.editId.text.toString(), binding.editPw.text.toString(), binding.editName.text.toString(), binding.editAge.text.toString(),
+            )
         }
     }
 
 
-    private fun createAccount(name:String, age:String, location:String, birth:String, email: String, password: String){
-       if(name.isNotEmpty() && age.isNotEmpty() && location.isNotEmpty() && birth.length >6 &&email.isNotEmpty()&& password.isNotEmpty()){
-           auth?.createUserWithEmailAndPassword(email, password)
-               ?.addOnCompleteListener(this){task ->
-                   if(task.isSuccessful){
-                       Log.d("createAc", "createUserWithEmail:success")
-                       writeNewUser(name, age, location, birth, email)
-                       finish()
-                   }else{
-                       Log.w("createAc", "createUserWithEmail:failure", task.exception)
-                       Toast.makeText(baseContext, "Authentication failed.",
-                           Toast.LENGTH_SHORT).show()
-                   }
-               }
-       }
+    private fun createAccount(email: String, password: String, name:String, age:String){
+        if(email.isNotEmpty()&& password.isNotEmpty() &&name.isNotEmpty() &&age.isNotEmpty()){
+            auth?.createUserWithEmailAndPassword(email, password)
+                ?.addOnCompleteListener(this){task ->
+                    if(task.isSuccessful){
+                        Log.d("createAc", "createUserWithEmail:success")
+                        writeNewUser(email, name, age)
+                        finish()
+                    }else{
+                        Log.w("createAc", "createUserWithEmail:failure", task.exception)
+                        Toast.makeText(baseContext, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
         else{
-           Toast.makeText(baseContext, "입력해주세요",
-               Toast.LENGTH_SHORT).show()
-       }
+            Toast.makeText(baseContext, "입력해주세요",
+                Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun writeNewUser(name:String, age:String, location:String, birth:String, email: String) {
-        val user = User(name, age, location, birth)
-        var tmp = email
-        val charsToRemove = "@."
-        charsToRemove.forEach { tmp = tmp.replace(it.toString(), "") }
-        println(tmp)
-        database.child("users").child(tmp).setValue(user)
+    private fun writeNewUser(email: String,name:String, age:String) {
+//        val user = User(email, name, age)
+//        val key = auth.uid
+//
+//        if (key != null) {
+//            database.child("users").child(key).setValue(user)
+//        }
+        val key = auth.uid
+        val user = hashMapOf(
+            "email" to email,
+            "name" to name,
+            "age" to age
+        )
+
+        if (key != null) {
+            db.collection("users").document(key).set(user)
+        }
+
+
     }
 }

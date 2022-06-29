@@ -1,16 +1,18 @@
 package com.example.gdsc_project.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gdsc_project.R
 import com.example.gdsc_project.model.User
 
 class NewsAdapter(private val dataset:ArrayList<User>): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     class NewsViewHolder(val view : View) : RecyclerView.ViewHolder(view){
-        val button: Button = view.findViewById(R.id.button_item)
+        val textView: TextView = view.findViewById(R.id.text_item)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_news,parent,false)
@@ -20,7 +22,8 @@ class NewsAdapter(private val dataset:ArrayList<User>): RecyclerView.Adapter<New
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val item = dataset[position]
-        holder.button.text = item.username
+        holder.textView.text = item.age
+
     }
 
 

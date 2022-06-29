@@ -9,15 +9,23 @@
         android:id="@+id/navigation_home"
         android:name="com.example.gdsc_project.fragment.NewsFragment"
         android:label="fragment_news"
-        tools:layout="@layout/fragment_news" />
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.gdsc_project.fragment.DashboardFragment"
-        android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_navigation_home_to_selectPolicyFragment"
+            app:destination="@id/selectPolicyFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.gdsc_project.fragment.MyInformationFragment"
         android:label="fragment_my_information"
         tools:layout="@layout/fragment_my_information" />
+    <fragment
+        android:id="@+id/selectPolicyFragment"
+        android:name="com.example.gdsc_project.fragment.SelectPolicyFragment"
+        android:label="fragment_select_policy"
+        tools:layout="@layout/fragment_select_policy" >
+        <action
+            android:id="@+id/action_selectPolicyFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 </navigation>
