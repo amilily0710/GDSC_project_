@@ -8,9 +8,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gdsc_project.R
+import com.example.gdsc_project.model.Policy
 import com.example.gdsc_project.model.User
 
-class NewsAdapter(private val dataset:ArrayList<User>): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(private val dataset:ArrayList<Policy>): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     class NewsViewHolder(val view : View) : RecyclerView.ViewHolder(view){
         val textView: TextView = view.findViewById(R.id.text_item)
     }
@@ -22,7 +23,7 @@ class NewsAdapter(private val dataset:ArrayList<User>): RecyclerView.Adapter<New
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val item = dataset[position]
-        holder.textView.text = item.age
+        holder.textView.text = item.toString()
 
     }
 

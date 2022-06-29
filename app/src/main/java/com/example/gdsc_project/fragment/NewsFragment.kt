@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gdsc_project.R
 import com.example.gdsc_project.adapter.NewsAdapter
 import com.example.gdsc_project.databinding.FragmentNewsBinding
+import com.example.gdsc_project.model.Policy
 
 import com.example.gdsc_project.model.User
 import com.google.firebase.auth.FirebaseAuth
@@ -27,7 +28,6 @@ class NewsFragment : Fragment() {
     private var _binding: FragmentNewsBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
-    //    private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
 
 
@@ -43,50 +43,49 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView = binding.recyclerView
-//        database = Firebase.database.reference
         auth = Firebase.auth
         val db = Firebase.firestore
         val docRef = auth.uid?.let { db.collection("users").document(it) }
-        val user : ArrayList<User> = arrayListOf()
-//        myPost.addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                user.clear()
-//                for(postSnapshot in snapshot.children){
-//                    // 여기에 DB에 있는 정책 불러오기
-//                    Log.d("@@@@@@@@@@@@", postSnapshot.value.toString())
+        val policy : ArrayList<Policy> = arrayListOf()
+
+//        db.collection("po")
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (document in result){
+//                    Log.d("!!!!!!!!!!!!!", "${document.id} => ${document.data}")
 //                }
-//               recyclerView.adapter?.notifyDataSetChanged()
 //            }
-//            override fun onCancelled(error: DatabaseError) {
+//            .addOnFailureListener { exception ->
+//                Log.d("!!!!!!!!!!!!!", "Error getting documents: ", exception)
 //            }
-//        })
 
-        docRef?.addSnapshotListener{ snapshot, e->
-            if (e != null) {
-                Log.w("NewsFragment", "Listen failed.", e)
-                return@addSnapshotListener
+        db.collection("po")
+            .addSnapshotListener{ snapshot, e ->
+                if (e != null) {
+                    Log.w("NewsFragment", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null ) {
+                    policy.clear()
+                    for (snap in snapshot){
+                        Log.d("!!!!!!!!!!!!!", "${snap.id} => ${snap.data}")
+                        policy.add(Policy(snap.data["FIELD8"]?.toString()
+                            , snap.data["사이트"]?.toString()
+                            , snap.data["정책내용"]?.toString()
+                            , snap.data["정책명"]?.toString()
+                            , snap.data["지역"]?.toString()
+                            ,snap.data["지원규모"]?.toString()
+                            ,snap.data["지원분야"]?.toString()
+                            ,snap.data["지원인원"]?.toString()))
+                    }
+                    recyclerView.adapter?.notifyDataSetChanged()
+                } else {
+                    Log.d("NewsFragment", "Current data: null")
+                }
             }
-
-            if (snapshot != null && snapshot.exists()) {
-                user.clear()
-                Log.d("NewsFragment", "Current data: ${snapshot.data?.get("name")}")
-                Log.d("NewsFragment", "Current data: ${snapshot.data?.get("email")}")
-                Log.d("NewsFragment", "Current data: ${snapshot.data?.get("age")}")
-
-                val email = snapshot.data?.get("email").toString()
-                val username = snapshot.data?.get("name").toString()
-                val age = snapshot.data?.get("age").toString()
-                user.add(User(email, username, age))
-
-                recyclerView.adapter?.notifyDataSetChanged()
-
-            } else {
-                Log.d("NewsFragment", "Current data: null")
-            }
-        }
 
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = NewsAdapter(user)
+        recyclerView.adapter = NewsAdapter(policy)
 
         binding.policyBtn.setOnClickListener {
             selectPolicy()
