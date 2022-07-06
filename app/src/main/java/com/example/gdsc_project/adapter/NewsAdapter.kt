@@ -9,11 +9,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gdsc_project.R
 import com.example.gdsc_project.model.Policy
+import com.example.gdsc_project.model.Select
 import com.example.gdsc_project.model.User
+import java.util.*
+import kotlin.collections.ArrayList
 
-class NewsAdapter(private val dataset:ArrayList<Policy>): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(private val dataset:ArrayList<Select>): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     class NewsViewHolder(val view : View) : RecyclerView.ViewHolder(view){
-        val textView: TextView = view.findViewById(R.id.text_item)
+        val textTitle: TextView = view.findViewById(R.id.item_title)
+        val textCount: TextView = view.findViewById(R.id.item_count)
+
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_news,parent,false)
@@ -22,8 +27,12 @@ class NewsAdapter(private val dataset:ArrayList<Policy>): RecyclerView.Adapter<N
     }
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
+
         val item = dataset[position]
-        holder.textView.text = item.toString()
+
+        holder.textTitle.text = item.supportAreas.toString()
+        holder.textCount.text = item.count.toString()
+
 
     }
 

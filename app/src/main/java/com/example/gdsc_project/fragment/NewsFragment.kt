@@ -5,23 +5,23 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+
+
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gdsc_project.R
 import com.example.gdsc_project.adapter.NewsAdapter
 import com.example.gdsc_project.databinding.FragmentNewsBinding
 import com.example.gdsc_project.model.Policy
+import com.example.gdsc_project.model.Select
 
-import com.example.gdsc_project.model.User
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class NewsFragment : Fragment() {
@@ -46,7 +46,20 @@ class NewsFragment : Fragment() {
         auth = Firebase.auth
         val db = Firebase.firestore
         val docRef = auth.uid?.let { db.collection("users").document(it) }
-        val policy : ArrayList<Policy> = arrayListOf()
+        val selectInfo : ArrayList<Select> = arrayListOf()
+
+        docRef?.get()?.addOnSuccessListener { document ->
+            if (document != null) {
+                Log.d("Users", "DocumentSnapshot data: ${document.data}")
+                binding.name.text = document.data?.get("name").toString()
+
+            } else {
+                Log.d("Users", "No such document")
+            }
+        }
+            ?.addOnFailureListener { exception ->
+                Log.d("Users", "get failed with ", exception)
+            }
 
 //        db.collection("po")
 //            .get()
@@ -59,6 +72,31 @@ class NewsFragment : Fragment() {
 //                Log.d("!!!!!!!!!!!!!", "Error getting documents: ", exception)
 //            }
 
+//        db.collection("po")
+//            .addSnapshotListener{ snapshot, e ->
+//                if (e != null) {
+//                    Log.w("NewsFragment", "Listen failed.", e)
+//                    return@addSnapshotListener
+//                }
+//                if (snapshot != null ) {
+//                    policy.clear()
+//                    for (snap in snapshot){
+//                        Log.d("!!!!!!!!!!!!!", "${snap.id} => ${snap.data}")
+//                        policy.add(Policy(snap.data["FIELD8"]?.toString()
+//                            , snap.data["사이트"]?.toString()
+//                            , snap.data["정책내용"]?.toString()
+//                            , snap.data["정책명"]?.toString()
+//                            , snap.data["지역"]?.toString()
+//                            , snap.data["지원규모"]?.toString()
+//                            , snap.data["지원분야"]?.toString()
+//                            , snap.data["지원인원"]?.toString()))
+//                    }
+//                    recyclerView.adapter?.notifyDataSetChanged()
+//                } else {
+//                    Log.d("NewsFragment", "Current data: null")
+//                }
+//            }
+
         db.collection("po")
             .addSnapshotListener{ snapshot, e ->
                 if (e != null) {
@@ -66,17 +104,20 @@ class NewsFragment : Fragment() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null ) {
-                    policy.clear()
+                    selectInfo.clear()
+                    var cnt = 0
+                    val supportAreas = mutableListOf<String>()
                     for (snap in snapshot){
-                        Log.d("!!!!!!!!!!!!!", "${snap.id} => ${snap.data}")
-                        policy.add(Policy(snap.data["FIELD8"]?.toString()
-                            , snap.data["사이트"]?.toString()
-                            , snap.data["정책내용"]?.toString()
-                            , snap.data["정책명"]?.toString()
-                            , snap.data["지역"]?.toString()
-                            ,snap.data["지원규모"]?.toString()
-                            ,snap.data["지원분야"]?.toString()
-                            ,snap.data["지원인원"]?.toString()))
+                        // 서울 22살 고르면 조건에 맞게 지원분야가 뜬다
+                        if (snap.data["지역"] == "서울" )
+                        {
+                            supportAreas.add(snap.data["지원분야"].toString())
+                        }
+
+                    }
+                    for (i in supportAreas.distinct()){
+                        cnt = Collections.frequency(supportAreas, i)
+                        selectInfo.add(Select(i, cnt))
                     }
                     recyclerView.adapter?.notifyDataSetChanged()
                 } else {
@@ -84,8 +125,8 @@ class NewsFragment : Fragment() {
                 }
             }
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = NewsAdapter(policy)
+        recyclerView.layoutManager = GridLayoutManager(context,2)
+        recyclerView.adapter = NewsAdapter(selectInfo)
 
         binding.policyBtn.setOnClickListener {
             selectPolicy()
