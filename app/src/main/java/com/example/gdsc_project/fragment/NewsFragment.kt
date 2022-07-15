@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 
 
@@ -24,9 +25,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
+
 class NewsFragment : Fragment() {
     private var _binding: FragmentNewsBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<NewsFragmentArgs>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var auth: FirebaseAuth
 
@@ -47,6 +50,7 @@ class NewsFragment : Fragment() {
         val db = Firebase.firestore
         val docRef = auth.uid?.let { db.collection("users").document(it) }
         val selectInfo : ArrayList<Select> = arrayListOf()
+        var possibleCnt = 0
 
         docRef?.get()?.addOnSuccessListener { document ->
             if (document != null) {
@@ -60,43 +64,7 @@ class NewsFragment : Fragment() {
             ?.addOnFailureListener { exception ->
                 Log.d("Users", "get failed with ", exception)
             }
-
-//        db.collection("po")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (document in result){
-//                    Log.d("!!!!!!!!!!!!!", "${document.id} => ${document.data}")
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.d("!!!!!!!!!!!!!", "Error getting documents: ", exception)
-//            }
-
-//        db.collection("po")
-//            .addSnapshotListener{ snapshot, e ->
-//                if (e != null) {
-//                    Log.w("NewsFragment", "Listen failed.", e)
-//                    return@addSnapshotListener
-//                }
-//                if (snapshot != null ) {
-//                    policy.clear()
-//                    for (snap in snapshot){
-//                        Log.d("!!!!!!!!!!!!!", "${snap.id} => ${snap.data}")
-//                        policy.add(Policy(snap.data["FIELD8"]?.toString()
-//                            , snap.data["사이트"]?.toString()
-//                            , snap.data["정책내용"]?.toString()
-//                            , snap.data["정책명"]?.toString()
-//                            , snap.data["지역"]?.toString()
-//                            , snap.data["지원규모"]?.toString()
-//                            , snap.data["지원분야"]?.toString()
-//                            , snap.data["지원인원"]?.toString()))
-//                    }
-//                    recyclerView.adapter?.notifyDataSetChanged()
-//                } else {
-//                    Log.d("NewsFragment", "Current data: null")
-//                }
-//            }
-
+        Log.d("tst5", "${args.supportArea.toString()}")
         db.collection("po")
             .addSnapshotListener{ snapshot, e ->
                 if (e != null) {
@@ -108,8 +76,10 @@ class NewsFragment : Fragment() {
                     var cnt = 0
                     val supportAreas = mutableListOf<String>()
                     for (snap in snapshot){
-                        // 서울 22살 고르면 조건에 맞게 지원분야가 뜬다
-                        if (snap.data["지역"] == "서울" )
+                        // 라디오버튼을 써버리면 메인에서 한개만 뜸. 지원분야를 선택안해도 실행됨
+                        val location = snap.data["지역"].toString()
+                        val supportArea = snap.data["지원분야"].toString()
+                        if ( location.contains(args.location.toString()) && supportArea.contains(args.supportArea.toString()))
                         {
                             supportAreas.add(snap.data["지원분야"].toString())
                         }
@@ -118,7 +88,9 @@ class NewsFragment : Fragment() {
                     for (i in supportAreas.distinct()){
                         cnt = Collections.frequency(supportAreas, i)
                         selectInfo.add(Select(i, cnt))
+                        possibleCnt += cnt
                     }
+                    binding.possiblePolicy.text = "지원가능한 정책: $possibleCnt"
                     recyclerView.adapter?.notifyDataSetChanged()
                 } else {
                     Log.d("NewsFragment", "Current data: null")

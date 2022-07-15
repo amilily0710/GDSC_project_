@@ -13,6 +13,16 @@
         <action
             android:id="@+id/action_navigation_home_to_selectPolicyFragment"
             app:destination="@id/selectPolicyFragment" />
+        <argument
+            android:name="location"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue='""' />
+        <argument
+            android:name="supportArea"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue='""' />
     </fragment>
     <fragment
         android:id="@+id/navigation_notifications"
