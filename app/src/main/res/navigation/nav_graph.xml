@@ -23,6 +23,9 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue='""' />
+        <action
+            android:id="@+id/action_navigation_home_to_fieldFragment"
+            app:destination="@id/fieldFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_notifications"
@@ -38,4 +41,9 @@
             android:id="@+id/action_selectPolicyFragment_to_navigation_home"
             app:destination="@id/navigation_home" />
     </fragment>
+        <fragment
+            android:id="@+id/fieldFragment"
+            android:name="com.example.gdsc_project.fragment.fieldFragment"
+            android:label="fragment_field"
+            tools:layout="@layout/fragment_field" />
 </navigation>

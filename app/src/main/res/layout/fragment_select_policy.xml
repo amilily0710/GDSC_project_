@@ -11,11 +11,12 @@
         android:id="@+id/location_spn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:minHeight="48dp"
         android:paddingRight="30dp"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.031"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="주거금융"
+            android:text="서울"
 
             />
 
@@ -44,36 +45,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="취업지원" />
+            android:text="경기도" />
 
         <RadioButton
             android:id="@+id/cb3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="생활복지" />
+            android:text="경기도 수원시" />
 
-
-        <RadioButton
-            android:id="@+id/cb4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="코로나19" />
-
-        <RadioButton
-            android:id="@+id/cb5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="창업지원" />
-
-        <RadioButton
-            android:id="@+id/cb6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="정책참여" />
 
     </RadioGroup>
 
@@ -88,5 +68,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="377dp"
+        android:layout_height="301dp"
+        android:layout_marginBottom="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"></ListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

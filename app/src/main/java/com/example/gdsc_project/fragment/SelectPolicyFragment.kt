@@ -7,14 +7,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
+import android.widget.ListAdapter
+import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.gdsc_project.R
 import com.example.gdsc_project.databinding.FragmentSelectPolicyBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.parcelize.Parcelize
 
 //@Parcelize
@@ -26,14 +34,22 @@ import kotlinx.parcelize.Parcelize
 //) : Parcelable
 
 class SelectPolicyFragment : Fragment() {
-    private var binding: FragmentSelectPolicyBinding? = null
+    private var _binding: FragmentSelectPolicyBinding? = null
+
+    private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSelectPolicyBinding.inflate(inflater, container, false)
+        _binding = FragmentSelectPolicyBinding.inflate(inflater, container, false)
         return binding!!.root
+
+
+
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,12 +69,6 @@ class SelectPolicyFragment : Fragment() {
                         cb2.text.toString()
                     } else if(cb3.isChecked){
                         cb3.text.toString()
-                    }else if(cb4.isChecked){
-                        cb4.text.toString()
-                    }else if(cb5.isChecked){
-                        cb5.text.toString()
-                    }else if(cb6.isChecked){
-                        cb6.text.toString()
                     }else{
                         ""
                     }
@@ -70,6 +80,9 @@ class SelectPolicyFragment : Fragment() {
                     findNavController().navigate(action)
 
                 }
+
+
+
 
         }
     }
