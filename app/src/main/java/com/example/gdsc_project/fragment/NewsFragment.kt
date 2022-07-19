@@ -105,7 +105,7 @@ class NewsFragment : Fragment() {
         }
 
         binding.recyclerView.setOnClickListener {
-            selectPolicy()
+            field()
         }
     }
 
@@ -115,7 +115,10 @@ class NewsFragment : Fragment() {
     }
 
     private fun selectPolicy(){
-        findNavController().navigate(R.id.action_navigation_home_to_fieldFragment)
+        findNavController().navigate(R.id.action_navigation_home_to_selectPolicyFragment)
+    }
+    private fun field(){
+        findNavController().navigate(R.id.action_navigation_home_to_selectPolicyFragment)
     }
 
 
